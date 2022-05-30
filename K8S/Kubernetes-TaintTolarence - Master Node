@@ -1,0 +1,48 @@
+With below config, pod will not schedule on master server.
+
+apiVersion: v1
+kind: Pod
+metadata:
+  name: pod1
+
+spec:
+
+  containers:
+  - image: httpd:2.4.41-alpine
+    name: pod1-container                  
+
+  tolerations:                            
+  - effect: NoSchedule                    
+    key: node-role.kubernetes.io/master   
+
+  nodeSelector:                           
+    node-role.kubernetes.io/master: ""    
+
+
+-------------------------------------
+
+apiVersion: v1
+kind: Pod 
+
+metadata:
+  name: taint-tolerent-pod
+  labels:
+    name: nginx
+    env: prod
+
+spec:
+  containers:
+    - name: nginx
+      image: nginx
+  
+  tolerations:
+    - key: "app"
+      operator: "Equal"
+      value: "blue"
+      effect: "NoSchedule"
+
+
+
+
+
+

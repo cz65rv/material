@@ -1,0 +1,125 @@
+Chrome
+---------
+wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
+sudo apt install ./google-chrome-stable_current_amd64.deb
+
+Visual Studio Code
+-------------------
+wget -q https://packages.microsoft.com/keys/microsoft.asc -O- | sudo apt-key add -
+sudo add-apt-repository "deb [arch=amd64] https://packages.microsoft.com/repos/vscode stable main"
+sudo apt install code
+
+Docker
+--------
+sudo apt-get install ca-certificates curl gnupg lsb-release
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
+echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+sudo apt-get update
+sudo apt-cache madison docker-ce
+sudo apt-get install docker-ce docker-ce-cli containerd.io
+systemctl status docker
+
+In case issue with permission, try below 2 options.
+
+Change .sock file permission to 666
+sudo chmod 666 /var/run/docker.sock
+
+Add your user to docker group in /etc/group file.
+
+sudo cp -p /lib/systemd/system/docker.service /var/tmp/docker.service
+sudo vi /lib/systemd/system/docker.service
+
+Change below line in /lib/systemd/system/docker.service systemd file
+
+ExecStart=/usr/bin/dockerd -H fd:// --containerd=/run/containerd/containerd.sock
+To:
+ExecStart=/usr/bin/dockerd -H fd:// --containerd=/run/containerd/containerd.sock --exec-opt native.cgroupdriver=systemd
+
+sudo systemctl daemon-reload 
+sudo systemctl restart docker
+sudo systemctl status docker
+docker version
+
+Terraform
+----------
+curl -fsSL https://apt.releases.hashicorp.com/gpg | sudo apt-key add -
+sudo apt-add-repository "deb [arch=$(dpkg --print-architecture)] https://apt.releases.hashicorp.com $(lsb_release -cs) main"
+sudo apt install terraform
+
+Jenkins
+--------
+wget -q -O - https://pkg.jenkins.io/debian-stable/jenkins.io.key | sudo apt-key add -
+sudo sh -c 'echo deb http://pkg.jenkins.io/debian-stable binary/ > /etc/apt/sources.list.d/jenkins.list'
+sudo apt-get update
+sudo apt install openjdk-11-jdk
+sudo apt install jenkins
+sudo systemctl status jenkins
+
+Execute below command to allow port 8080 got through if firewall is enable.
+sudo ufw allow 8080
+sudo ufw allow OpenSSH
+sudo ufw status
+
+Open http://localhost:8080 in browser. If will ask for Jenkins password, get password from below file.
+sudo cat /var/lib/jenkins/secrets/initialAdminPassword
+
+Install recommended plugins and create Jenkin admin user.
+
+Ansible
+--------
+sudo apt update
+sudo apt install software-properties-common
+sudo add-apt-repository --yes --update ppa:ansible/ansible
+sudo apt install ansible
+
+Kubernetes
+------------
+cat <<EOF | sudo tee /etc/modules-load.d/k8s.conf
+br_netfilter
+EOF
+
+cat <<EOF | sudo tee /etc/sysctl.d/k8s.conf
+net.bridge.bridge-nf-call-ip6tables = 1
+net.bridge.bridge-nf-call-iptables = 1
+EOF
+
+sudo sysctl --system
+
+sudo apt-get install -y apt-transport-https ca-certificates curl
+sudo curl -fsSLo /usr/share/keyrings/kubernetes-archive-keyring.gpg https://packages.cloud.google.com/apt/doc/apt-key.gpg
+echo "deb [signed-by=/usr/share/keyrings/kubernetes-archive-keyring.gpg] https://apt.kubernetes.io/ kubernetes-xenial main" | sudo tee /etc/apt/sources.list.d/kubernetes.list
+sudo apt-get update
+sudo apt-get install -y kubelet kubeadm kubectl
+
+mkdir -p $HOME/.kube
+sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
+sudo chown $(id -u):$(id -g) $HOME/.kube/config
+
+kubectl apply -f "https://cloud.weave.works/k8s/net?k8s-version=$(kubectl version | base64 | tr -d '\n')"
+
+kubeadm join 10.190.0.4:6443 --token xhdag5.auqidvzsu9f3s70g --discovery-token-ca-cert-hash sha256:e062facb6f53e1a07f67661256f1c0adec831ae579e34c3e6723f0462eec4365 
+
+Use below command if forget to note command and token for new node joining.
+kubeadm token create --print-join-command
+
+Installation of metrics server
+------------------------------
+kubectl apply -f https://github.com/kubernetes-sigs/metrics-server/releases/latest/download/components.yaml
+
+If metrics server's pod failed to come up due to readiness probe then add below lines in metrics server deployment config, just after args section and just before image name 
+
+kubectl edit deploy metrics-server -n kube-system
+
+
+command:
+- /metrics-server
+- --kubelet-insecure-tls
+- --kubelet-preferred-address-types=InternalIP
+
+For Istio service mesh
+-------------------------
+Install istioctl command line utility
+
+curl -sL https://istio.io/downloadIstioctl | sh -
+
+export PATH=$PATH:$HOME/.istioctl/bin 

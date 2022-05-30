@@ -1,0 +1,24 @@
+Create Service Account (SA)
+-----------------------
+
+kubectl create sa processor -n project-hamster
+
+------------
+Create Role
+------------
+# kubectl create role developer --namespace=default --verb=list,create,delete --resource=pods
+# kubectl create role processor --namespace=default --verb=create --resource-name=secrets,configmaps
+
+---------------------------
+Create RoleBinding for Role
+---------------------------
+# kubectl create rolebinding processor --namespace=default --role=processor --user=processor
+# kubectl create rolebinding processor --role processor --serviceaccount project-hamster:processor >>> This is for service account
+
+
+kubectl auth can-i create secret -as system:serviceaccount:project-hamster:processor -n project-hamster
+
+
+
+
+

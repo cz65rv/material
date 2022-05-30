@@ -1,0 +1,50 @@
+Docker Hub Credentils
+mukeshsingh08/Life@007
+
+# service docker start/stop -- To start/stop docker service
+
+# docker search app-name --- To search docker hub repository to related to any specific image
+
+# docker pull image-name -- To pull or download any image from docker hub
+
+# docker run image-name -- To containerize the image and start it.
+# docker run -d image-name -- To containerize the image and start it. This will run container in background and will give prompt back
+# docker run -d -p 5000:5000 image-name -- To containerize the image and start it. This will run container in background and will give prompt back, This is will expose service from container to 5000 of host.
+# docker run -it image-name -- To containerize the image and start it. It will get you inside the container. (This will be temporary and once you exited from container it will be stopped)
+
+# docker exec -it container-id bash -- To get you inside the container with bash shell and when you type exit it will not stop container.
+
+# docker stop container-id --To stop running container
+# docker start container-id -- To start any stopped container
+
+# docker pause container-id -- To pause any running container
+# docker unpause container-id -- To resume any running container
+# docker kill container-id --To kill any container immediately instead of gracefully shutdown the services.
+
+# docker ps -- To show running container
+# docker ps -a -- To show all container including stopped container
+# docker containers ls -- To list running containers
+# docker containers ls -a -- To list all containers even though they stopped, killed or exited
+
+# docker rm container-id -- To remove any container
+# docker logs container-id -- To check logs of container
+# docker images -- To show locally available images from docker hub
+
+# docker images rm image-name -- To remove locally available image by name
+# docker images rmi image-id -- To remove locally available image by ID
+
+# docker container inspect container-id --- To check configuration of docker container
+# docker image history image-id --- To check configuration of docker image
+# docker image inspect image-id --- To check detail configuration of docker image
+
+# docker system df --- To show disk usage related to docker system
+# docker system events --- This will show docker and container related events
+# docker system prune -- This will remove all stopped/killed/exited containers.
+# docker system prune -a -- This will not only remove unused containers but all other item like unused image, networks and build cache.
+
+docker tag nodejs-sample cz65rv/lab:nodejs-sample-v1
+
+sudo docker commit [CONTAINER_ID] [new_image_name]
+
+
+

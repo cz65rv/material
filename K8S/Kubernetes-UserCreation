@@ -1,0 +1,66 @@
+To create new user key
+-----------------------
+openssl genrsa-out mukesh.key 2048
+
+Create new user certificate
+----------------------------
+openssl req -new -key mukesh.key -subj "/CN=mukesh" -out mukesh.csr
+
+Create certificate signing request (CSR) for approval or signing of certificate by CA.
+
+--------------------------
+
+apiVersion: certificates.k8s.io/v1beta1
+kind: CertificateSigningRequest
+metadata:
+  name: mukesh
+spec:
+  signerName: kubernetes.io/kube-apiserver-client
+  groups:
+  - system:authenticated
+  request: LS0tLS1CRUdJTiBDRVJUSUZJQ0FURSBSRVFVRVNULS0tLS0KTUlJQ1ZqQ0NBVDRDQVFBd0VURVBNQTBHQTFVRUF3d0dZV3R6YUdGNU1JSUJJakFOQmdrcWhraUc5dzBCQVFFR
+  gpBQU9DQVE4QU1JSUJDZ0tDQVFFQTV6dnRWMEhlbzRaWGhrN2cxTW1SMitBSEwxdUFjTWlPSUtpY0hWbXd0dTNXCmIyRVpQNVRlNUtHdkQ4cHA5L0dtQ085Qkg1WlRBQTZESEFtVkVuRHhk
+  ak43VGtMWkZpc2lHMGgzVlZwdHRUK20KczFNUUZMMlEzYTFpeHk0bW91M1RzSlZWNytVRng5Tzc1K2s1UTJXYU8rRVZSdEdRejdiUnR0Qm41VDhYVDBKawoveVBzOFU3S2Y1aStrWWpIRUxxNEJ
+  BUVByL0hhcjl3RnpINUZVZ2p5d0EyYUJPMnduOFkvR0VyK0NUOVlqcFhECnVpZFpQaFlpOUkrNUlxSjVFazNRRUF1N3NHR3MzcXUvNzhtNUp3RlQ5dU1hSVJNY2JhVEZ0VDQ1NDZTU05maUcKdl
+  lKS1Z0ME5IbDNrZlJFbUpsV0l0ZG52UVR4cm1ZeWlHcUN4QlVsb1J3SURBUUFCb0FBd0RRWUpLb1pJaHZjTgpBUUVMQlFBRGdnRUJBS1p2VEhJc3VtWW1KUDYrb3VDcEFwZU83cGdUck13NEMvaUJ
+  RMXhBZElzTnRjK2tuQUdrCjE4TFd2d3BXNERDdHpjdTFJRWRlR1NUS3ZVdVFJSExsK0lWWityQkthN04yaTNQV1VmalJUMXRjYTVTc2NYQysKNEg5UnhaY1l1UVZNN0RpVHJJY0ZwalI4RlF2a3c3N
+  UJkVUE4WGJaN29kcmxYTUV6U2xYb1hycnA2OG5ZSno4RgovdCtZSitZeWZhQTQycFZSOVFoOUp3eFQ2ZjdTNlVNd0h2SlgxSzdsTkRQbTBLbWN6U2RLWnI1aVRiTC9DenFOCmx3M3VlYUNMVHVVWUFxc
+  WhoeGdYaGhCemFTNER5ZDFrQXlpN3ozckgyZ3prV0dJRHFpUGFPTVdqMmVBbUh4MEEKdGRGUmJlem9vRzFlU2doaFFLL05MVmJmSWlRMnJUck5qSm89Ci0tLS0tRU5EIENFUlRJRklDQVRFIFJFUVVFU1QtLS0tLQo=
+
+MIIEowIBAAKCAQEAw3fvkSas9i7vYQHDj+2JCzU86ujr8bvJb6Lum0gA/ybyX3PV
+v9coSnFjUk60YncGYmYZfn0I/wueKnaCoTJiskP3dgBhryCn+kprJUJhWu9p1FlR
+DW+ipjq1fx5oxQEThyaiZiQuZvKdRsZLEmg7jvx4A3YK9KsK49kZJOi4ADCxhoOT
+H71UJeI5YOf9MQq4qvBeLK4/DWKDnwT2KAk2uohmci+6zERY/Whdai1XAn4nRLei
+uVGBX/sTcXULOBHnqq1Nlym4q+POXCMeNeT+TeuNTIb0/PY64NE0crLjvvUnURH1
+hf86Be6ncOoouJqp+1/VNwTi9diusBi2TLCVxQIDAQABAoIBAEwKYVkPOaP/uEH9
+pK1eE70Xdd5QxFDi48cZFEe2KCUaapl1f4bE1bi4CZJgac4QTZyD6ZEKZTCKvXn5
+ZnH9HuYIiMEP/vBY/N/iiXISM7tjfcENCfn3HsgZ+Lc+BjX1aDpgbjbcBm0oHsUE
+qPm9MMY8MxftmO97hp4Cu8RfAA2aNbkklXixf67o2mh9SEeV/w71zDBlF6fm/bB5
+CykLtMVlADJdOR6kD+UnOkq5sWl8X530G7OQfMVhRvY1tNKnk3xoB3cP7v58QaTo
+sv654en4HaZ3Jcods9i5Tbv0Rxk/QhjEi/izjldtdNBmEHdaVzPjmX2G7WVTqB4h
+kfV/HNUCgYEA4OuP3XAS7jD3aQJpVkiG1QgIYt2DZJa86zzyTLQWNNIvNd2fS5hq
+5+keLDqYjhFhVtpuxpudN21ott03oXS0amzCi4pBNabEcj4qJXyHg5kdqsqGe6eZ
+bSYXAQ+ctt+J/vMLJ5VuquxAlx73XPn3RqZXAi7INGtqEVNlahokHYsCgYEA3nqJ
+NOzggaVtA8ldvULiEaz1dypSzoZI1sEYZi0UdNurLh3X0oVxNXZry6ZeWax2j6qU
+wSs1LyYh+i48HhRAwo5sDLIXfnJyym2JEtZBP0ORysjidVMJvkq01YogarDne/Mp
+bdfT9HntPY6eVK6icEXfz/VTRnYZIS9WYrqtI+8CgYAQkqrmGST78hW44hma5vsw
+ZUgg6MuOtOC0wKfl6Psd50LdSDg9nLx73ByCC8tD5Jn0iWHSNpMuC1zE5KX9upi0
+otDu8T/+0Qv2kwgN/RALLVQXSpcAM4hFl6HoTRsyCmSjqYrv3r3p0ECuIfT+H9kN
+lqIgogvUePm2zxtQ5x40IwKBgQDcEKVLvsvMMhAFYNficBgil80ulKTYOKgwFUzH
+NOw5M1i+AzMKwIhc88ho5yYI2bllHryJ3u16t+OADt/UeQAd8rcaT8dBgn/dkD+4
+bEqaA4Jg7hhjKUJIAqmhWEH8hwRS7RIb3xN/jmOHMl2XMi7nk5ZxpB89YXA2DRcM
+Dc9Z7QKBgFXHLAGtvHKC24BvMLAzxELMqv+Ewax7BUGn3NVzfYkha4P2LeREAJL1
+VbdawP+ThRj7nOldn7W9b/gyxCOc3/wn2yrlmKWHvacBGRlC0DHCVfhL++KOfvu4
+cL2YbboD/kzfWYI7Jty6V0GobLdjx5K+SBVp1ydbMBlvRZuFMp/5
+  usages:
+  - digital signature
+  - key encipherment
+  - server auth
+
+------------------------------
+
+List and approve request CSR
+
+kubectl get csr
+
+kubectl certificate approve <csr-name>

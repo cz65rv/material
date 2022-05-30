@@ -1,0 +1,246 @@
+https://cheatsheet.dennyzhang.com/
+in28min/hello-world-rest-api:0.0.1.RELEASE
+
+Configuration files and location
+-----------------------------------
+/etc/kubernetes/manifest ---> This is location of static pod which include master's static pod like etcd, scheduler, apiserver & control-manager. Any static pod can be create after placing related config file in yaml format.
+
+/var/lib/kubelet/config.yaml  --> Above location may be different in different environment, check this for staticPodPath value for exact location.
+
+root@controlplane:/# grep -i staticpodpath /var/lib/kubelet/config.yaml 
+staticPodPath: /etc/kubernetes/manifests
+
+kubectl get nodes -o jsonpath='{.items[*].status.nodeInfo.osImage}' --> To get any information related to any object through json output. In this example it will fetch node OS name of node.
+
+root@controlplane:/# kubectl get nodes -o jsonpath='{.items[*].status.nodeInfo.osImage}' 
+Ubuntu 18.04.5 LTS
+
+Kubernets Commands Reference
+-----------------------------
+
+# kubectl exec -it pv-pod -- /bin/bash >> To get shell from running Pod
+
+# kubectl run nginx --image=nginx
+
+# kubectl get node   --- This display all nodes running
+
+# kubectl get pods --- This will display all pods on node
+
+# kubectl get pod nginx -o yaml > output file which can be used as pod definition file to create it again.
+
+# kubectl get replicaset --- This will display all replica set
+
+# kubectl get deployment --- This will display all deployment 
+
+# kubectl get service --- This will display all services
+
+# kubectl get all --- This will display all component
+
+# kubectl logs my-pod --- To show pod log
+
+# kubectl logs my-pod -c container1 -- To show logs from one of the container in pod with multiple containers
+
+# kubectl get pods -o wide   --- This will display all pods with more details
+
+# kubectl describe pod nginx ---  Displaying details of kubernetes object like pod, replicaset & deployment, services etc.
+
+# kubectl expose deployment hr-web-app --type=NodePort --port=8080 --name=hr-web-app-service --dry-run=client -o yaml > hr-web-app-service.yaml
+
+kubectl expose pod myapp --name=myapp-nodeport-svc --port=8080 --target-port=8080 --type=NodePort
+
+# kubectl expose pod messaging --name=messaging-service --port 6379 --target-port 6379
+
+# kubectl expose pod nginx --name=nginx-service --type=NodePort --port=8080 --target-port 8080
+
+# kubectl explain pod --recursive | more ------ To dsiplay all applicable option for any kubernetes resource.
+
+kubectl -f test.yaml replace --force ----- This is used for deleting and recreating pod using yaml file.
+
+kubectl label node node01 color=blue    --- To set labels
+
+To create secret 
+-----------------
+# kubectl create secret generic db-secret --from-literal=DB_Host=mysql01 --from-literal=DB_User=admin --from-literal=DB_Password=password123
+
+---------------------------------------------------------
+Deploying kubernetes objects using yaml definition file.
+---------------------------------------------------------
+
+# kubectl apply -f nginx.yaml    --- This will deploy pod using yaml definition file
+
+-----------------------------------------------------
+Updating any kubernetes object running configuration.
+-----------------------------------------------------
+
+# kubectl edit pod nginx  --- This will allow to edit given pod configuration
+
+# kubectl scale replicaset replicaset --replicas=4   --- To scale-up or scale-down number of replicas
+
+
+******************************
+Deployment and Rolling Update
+******************************
+
+-------------------------
+Create deployment object:
+-------------------------
+
+kubectl create deployment <deployment-name> --image=<image-name> --replicas=5 ---- This will create deployment with 5 replica pods.
+
+# kubectl create deployment my-deployment --image=httpd:2.4-alpine --replicas=5
+
+----------------------------------------------------
+You may scale up or down the replicas in case needed
+----------------------------------------------------
+
+kubectl scale deployment <deployment-name> --replicas=<number of replicas> ---- To scale up or down the number of replicas.
+
+# kubectl scale deployment my-deployment --replicas=3
+
+------------------------------------
+Rolling out updates/upgrade of PODs
+-----------------------------------
+
+There are multile of options to update running pods as shown below.
+
+-------------------------------------
+Update pod image using below command:
+-------------------------------------
+
+kubectl set image deployment <deployment-name> <container-name>=<app-name>:<app-version> --record  
+
+# kubectl set image deployment my-deployment webserver=httpd:2.4.28 --record
+
+------------------------------------------------------------------
+Update pod using edit command to update running pod configuration:
+------------------------------------------------------------------
+
+# kubectl edit deployment my-deployment --record
+
+-----------------------
+Update using yaml code:
+-----------------------
+Create new or update existing deployment definition yaml file with updated configuration. And apply new configuration using apply command as below.
+
+# kubectl apply -f <updated-yaml-file-name>
+
+-------------------------------------
+Checking deployment status & history.
+-------------------------------------
+
+# kubectl rollout status deployment.apps/my-deployment
+
+# kubectl rollout history deployment.apps/my-deployment
+
+---------------------------------------
+Rollback of update using undo command.
+---------------------------------------
+
+# kubectl rollout undo deployment.apps/my-deployment
+
+
+**********************************************
+JSONPATH, custom columns and sort-by commands
+**********************************************
+
+-----------------------------------------------------
+Use of jsonpath query to extract specific information
+-----------------------------------------------------
+
+# kubectl get nodes -o=jsonpath='{.items[*].metadata.name}'
+
+-------------------------------------------------------------------------------------
+Reading config file in json format and using jsonpath to extract specific information.
+-------------------------------------------------------------------------------------
+
+# kubectl config view --kubeconfig=/root/my-kube-config -o jsonpath='{.users[*].name}'
+
+---------------------------------------
+Use of jsonpath to extract osImage name
+---------------------------------------
+
+# kubectl get nodes -o jsonpath='{.items[*].status.nodeInfo.osImage}'
+
+------------------------
+Use of sort-by option
+------------------------
+
+# kubectl get pv --sort-by=.spec.capacity.storage > /opt/outputs/storage-capacity-sorted.txt
+
+-------------------------------------------
+Use of sort-by with custom-columns option
+--------------------------------------------
+
+# kubectl get pv --sort-by=.spec.capacity.storage -o=custom-columns=NAME:.metadata.name,CAPACITY:.spec.capacity.storage
+
+Exmample:
+---------
+controlplane $ kubectl get deployment -n admin2406 --sort-by=.spec.template.spec.containers[*].image -o=custom-columns=DEPLOYMENT:.metadata.name,CONTAINER_IMAGE:.spec.template.spec.containers[*].image,READY_REPLICAS:.spec.replicas,NAMESPACE:.metadata.namespace
+
+DEPLOYMENT   CONTAINER_IMAGE   READY_REPLICAS   NAMESPACE
+deploy1      nginx             1                admin2406
+deploy3      nginx:1.16        1                admin2406
+deploy4      nginx:1.17        1                admin2406
+deploy2      nginx:alpine      1                admin2406
+deploy5      nginx:latest      1                admin2406
+
+-------------------------------------------------------------------------------------------------------------
+Use of wild card for searching value for given condition. Below example will find context name for aws-user.
+-------------------------------------------------------------------------------------------------------------
+
+kubectl config view --kubeconfig=my-kube-config -o jsonpath="{.contexts[?(@.context.user=='aws-user')].name}"
+
+*******************
+Misc. commands
+*******************
+
+kubectl addons enable metric-server  -------------- Enable Metric server for resurce monitoring.
+
+-----------------------------
+To take etcd database backup.
+-----------------------------
+
+# ETCDCTL_API=3 etcdctl --endpoints=https://127.0.0.1:2379 --cacert=<trusted-ca-file> --cert=<cert-file> --key=<key-file> snapshot save <backup-file-location>
+
+------------------------------
+To restore etcd databse backup.
+-------------------------------
+
+ETCDCTL_API=3 etcdctl --endpoints=https://10.2.0.9:2379 snapshot restore <backup-file-location>
+
+# kubectl exec webapp -- cat /log/app.log  >>>>>>> Commands to execute any command inside the pod
+
+# kubectl get pods --selector env=prod,tier=frontend,bu=finance       >>>>>>>    To display kuberbetes resources as pe labels.
+
+# openssl x509 -in /etc/kubernetes/pki/apiserver.crt -text -noout     >>>>>>>> To Display content of any certificate.
+
+
+Remove Kuberentes CLuster
+-------------------------
+
+$ kubeadm reset
+# sudo apt purge kubeadm kubectl kubelet kubernetes-cni kube*   
+$ sudo apt autoremove  
+$ sudo rm -rf .kube
+
+
+
+PV or PVC stuck in Terminating state
+----------------------------------
+
+kubectl describe pvc PVC_NAME | grep Finalizers   >>> Get the Finalizers
+kubectl patch pvc PVC_NAME -p '{"metadata":{"finalizers": []}}' --type=merge
+
+
+Exposing and accessing deployment or pod in minikube
+
+# echo $(minikube docker-env) >> This command will show you actual node IP of minikube node which normally not visible anywhere. There would output something like below.
+
+export DOCKER_TLS_VERIFY="1" export DOCKER_HOST="tcp://192.168.49.2:2376" export DOCKER_CERT_PATH="/home/mukesh/.minikube/certs" export MINIKUBE_ACTIVE_DOCKERD="minikube" # To point your shell to minikube's docker-daemon, run: # eval $(minikube -p minikube docker-env)
+
+Create NodePort service and expose with mimikube node IP along with port which you can get it by describin the related service. You may also create LoadBalancer type service and access by this method.
+
+
+To expose any service in Minikube use below command after creating service
+# minikube service hello-world-svc
+

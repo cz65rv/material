@@ -1,0 +1,71 @@
+Python code for testing of docker image
+--------------------------------------
+
+from flask import Flask
+helloworld = Flask(__name__)
+@helloworld.route("/")
+def run():
+    return "{\"message\":\"Hello World from Kubernetes v1\"}"
+if __name__ == "__main__":
+    helloworld.run(host="0.0.0.0", port=int("5000"), debug=True)
+
+Content of requirement file
+----------------------------
+flask
+
+Dockerfile content
+------------------
+FROM python:alpine3.10
+WORKDIR /app
+COPY . /app
+RUN pip install -r requirement.txt
+EXPOSE 5000
+CMD python ./launch.py
+
+Build docker image
+------------------
+# docker build -t cz65rv/hello-world-python:0.0.1.Release .
+
+To run comtainer with newly created docker image
+--------------------------------------------------
+# docker run -p 5000:5000 -d cz65rv/hello-world-python:0.0.1.Release
+
+To push docker image do dockerhub repository
+--------------------------------------------
+# docker push cz65rv/hello-world-python:0.0.1.Release
+
+
+
+----------------------------------------------------------------------------------------------------
+Another sample code of hello-world python code
+----------------------------------------------------------------------------------------------------
+from flask import Flask
+app = Flask(__name__)
+@app.route("/")
+def hello():
+    return "Hello World!"
+if __name__ == "__main__":
+    app.run(host='0.0.0.0')
+
+Dockerfile content
+------------------
+FROM python:3.8
+WORKDIR /code
+COPY requirement.txt .
+RUN pip install -r requirement.txt
+COPY server.py .
+CMD [ "python", "./launch.py"]
+
+Content of requirement file
+----------------------------
+Flask==1.1.1
+
+Build docker image
+------------------
+# docker build -t python-flask .
+
+To run comtainer with newly created docker image
+--------------------------------------------------
+# docker run -p 5000:5000 -d python-flask
+
+Note: By default any Flask based app run or get exposed on port 5000

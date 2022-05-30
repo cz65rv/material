@@ -1,0 +1,19 @@
+Skills required for Cloud and Automation job:
+---------------------------------------------
+Linux
+AWS Compute Service: EC2, AMI, Lambda, Autoscaling, Load Balancers, Spot Instances
+AWS Storage Service: S3, EFS, EBS, Glacier, Storage Gateway
+AWS Security Service: IAM, AWS Config, Cloud Trail, WAF, KMS
+AWS Network Service: VPC, Subnets, Router, Transit Gateway, VPN, VPC Endpoint
+AWS observability Service: CloudWatch Alarms, CloudWatch Logs, Cloud Trail, VPC Flow Logs, ECS/EKS Enhance Monitoring
+ 
+
+Docker and Container Orchestration using Kubernetes on AWS EKS or AWS ECS
+AWS Database Service: AWS RDS, Cache, Read Replicas, Dynamo DB
+Scriptiing Shell/Python 
+Configuration tools like Ansible
+Source Code Management: Gitlab/ GitHub/ Bitbucket/Code Commit.
+AWS Orchestration Tools like - Terraform, Cloud Formation
+Build Automation Server: AWS Code build/ AWS Code deploy/ Jenkins/ Gitlab CI/ Gitlab runner/ Sonar.
+Collaboration: JIRA/ Confluence
+Experience with Elasticsearch, Logstash & Kibana stacks.

@@ -1,0 +1,83 @@
+Get list of available kubeadm & kubernetes version
+--------------------------------------------------
+apt update
+apt-cache madison kubeadm
+
+Upgrade kubeadm 
+-----------------
+apt-mark unhold kubeadm
+apt-get update 
+apt-get install -y kubeadm=1.19.0-00
+apt-mark hold kubeadm
+
+Verify kubeadm version
+---------------------
+kubeadm version
+
+Check upgrade plan for cluster
+-----------------------------
+sudo kubeadm upgrade plan
+
+Upgrade cluster using below command
+-----------------------------------
+sudo kubeadm upgrade apply v1.19.0
+
+Drain & mark controlplane unschedulable
+---------------------------------------
+kubectl drain controlplane --ignore-daemonsets
+
+Upgrade kubelet and kubectl on controlplane
+---------------------------------------------
+apt-mark unhold kubelet kubectl
+apt-get update 
+apt-get install -y kubelet=1.19.0-00 kubectl=1.19.0-00
+apt-mark hold kubelet kubectl
+
+Restart and reload kubelet
+--------------------------------------
+sudo systemctl daemon-reload
+sudo systemctl restart kubelet
+
+Bring the node back online by marking it schedulable.
+-----------------------------------------------------
+kubectl uncordon controlplane
+
+
+---------------------
+Upgrade worker nodes 
+---------------------
+
+Upgrade kubeadm on all worker nodes.
+-------------------------------------
+apt-mark unhold kubeadm
+apt-get update 
+apt-get install -y kubeadm=1.19.0-00
+apt-mark hold kubeadm
+
+Upgrade kubelet configuration.
+-----------------------------------
+sudo kubeadm upgrade node
+
+Drain the node
+---------------
+kubectl drain node01 --ignore-daemonsets
+
+Upgrade kubelet and kubectl
+----------------------------
+apt-mark unhold kubelet kubectl
+apt-get update 
+apt-get install -y kubelet=1.19.0-00 kubectl=1.19.0-00
+apt-mark hold kubelet kubectl
+
+Restart and reload kubelet
+--------------------------------------
+sudo systemctl daemon-reload
+sudo systemctl restart kubelet
+
+Bring the node back online by marking it schedulable
+-----------------------------------------------------
+kubectl uncordon node01
+
+Verify cluster status
+---------------------
+kubectl get nodes

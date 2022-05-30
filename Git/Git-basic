@@ -1,0 +1,68 @@
+Initialize GIT
+#git init
+
+Add user details
+git config --global user.name "Mukesh Singh"
+git config --global user.email "cz65rv@gmail.com"
+
+Display user details
+#git config --global --list
+
+Run below command to save your GIT login credentials.
+#git config --global credential.helper store
+
+To remove saved or cached git credetails
+#git config --global --unset credential.helper
+
+To add file in staging area
+#git add <file-name> or . 
+
+Perform commit for added files 
+# git commit -m "Commit msg"
+
+To add remote repository to your local computer
+#git add remote https://github.com/cz65rv/lab.git
+
+To remove remote repository to your local computer
+#git remote remove https://github.com/cz65rv/lab.git
+
+Pull command will pull the all files from given repository
+#git pull https://github.com/cz65rv/nodejs.git
+
+Clone command will not only pull all files from given repository but will add remote repository as well
+#git pull https://github.com/cz65rv/nodejs.git
+
+To create branch and move into that branch
+#git checkout -b demo
+
+Create branch without moving into it.
+#git branch demo
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+git init
+git config --global user.email "cz65rv@gmail.com"
+git config --global user.name "Mukesh"
+git branch -M main
+git add README.md
+git commit -m "first commit"
+git branch -M main
+git remote add origin https://github.com/cz65rv/lab.git
+git push -u origin main
+
+
+
+
+

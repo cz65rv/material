@@ -1,0 +1,20 @@
+To add existing ssh key to new instance.
+----------------------------------------
+
+resource "aws_instance" "jenkins-server" {
+  ami           = data.aws_ami.latest-ubuntu.id
+  instance_type = "t3.micro"
+  key_name = "defaul-key"
+
+}
+
+To add user created key which is not created in AWS rather created on local machine.
+----------------------------------------------------------------------------------------
+
+resource "aws_key_pair" "default-key" {
+  key_name   = "default-key"
+  public_key = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCJ59Q04ef6/cGSFYqnw3s5th8Jc5YrTXDRmH0a490I+k59C/9FmHfkdMSHSoHjraf9iTN091Qp8J4au44LE28/SMPWg+7uCEA0lbJC2/yQfUn7ZCXurYMZmaaaTTFaT8PeCxhPSTWxbi5/uSsXarPDBvXQWZFCl0iIWuNTlSPFr69Hdpelj9OwWE6lopjGThwkQcpy1M4wAVkWbRJe++MLA0nqbafqta1CwIg30fvumGiXv/OvTnMoCwXWlyGEzfqaQMVHhabutI87+qpCugarsCXLj5uAc6XKqWDtUWDWvMacmSbW3F724lUKWOHGUggsXuoRXubblFSW7NhqDByF"
+}
+
+Extarct public ssh-key from private ssh-key
+# ssh-keygen -y -f default-key.pem  

@@ -1,0 +1,71 @@
+Account (mks8779) ID: 868062725928
+Account (cz65fv) ID: 667123756267
+
+What is VPC endpoint
+What is resource like S3 endpoint
+VPC Peering
+Connecting EC2 instance to S3 bucket using terraform via IAM role
+What is HAProxy
+CloudFormation StackSet
+Transit Gateway
+Site to Site VPN
+Client VPN
+Global Acceralator
+Landing Zone
+Control Tower
+Route53
+Load Balancer
+Auto Scaling Group
+CloudTrail
+
+--------------------
+VPC Peering Steps
+--------------------
+
+Create required VPC and Subnet, below is example setup.
+
+1. Create 2 VPC
+
+VPC-A - CIDR 10.100.0.0/16
+VPC-B - CIDR 10.200.0.0/16
+
+2. Create 3 Subnet
+
+VPC-A-Private-Subnet - CIDR 10.100.1.0/24
+VPC-A-Public-Subnet - CIDR 10.100.2.0/24
+VPC-B-Private-Subnet - CIDR 10.200.1.0/24
+
+3. Create Internet Gateway and attach it to VPC-A
+
+VPC-A-Internet Gateway
+
+4. Create Route Table
+
+There would be default or main route table per VPC, create additional Route Table
+
+VPC-A-Private-Subnet-RT - Local routing
+VPC-A-Public-Subnet-RT - Destination: CIDR 0.0.0.0/0 Target: Internet Gateway + Local routing
+VPC-B-Private-Subnet-RT - Local routing
+
+5. Associate route table with related subnet.
+
+6. Create 3 Security Group
+
+There would default Security Group per VPC, create additonal Security Group
+
+VPC-A-Private-SG
+VPC-A-Public-SG
+VPC-B-Private-SG
+
+7. Create Peering connection for VPC
+
+Create peering connection and accept it in peering connection option.
+
+8. Create additional route table for VPC-A and VPC-B. In destination provide each other's VPC CIDR block and in target select peering connection.
+
+9. Create 3 instance 1 per subnet.
+
+Create instance in each subnet and make sure except instance in public subnet, none of the instance get public IP. Once all instances launched, first login to VPC-A public subnet insatnce then from there ssh VPC-A private instance. Now ssh from VPC-A private instance to VPC-B private instance, if it work menas VPC peering working as expected. 
+
+Refer this ideo if needed: https://youtu.be/HMInA8yMw1k
+

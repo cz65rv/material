@@ -1,0 +1,14 @@
+EKS - EKS is platform hosted on AWS
+
+
+Develop codes and push to private repository
+EKS > EKS Components > Terraform > Github > Jenkins > Bash/Python/Ansible Script > Private Repository
+
+Using EKS (AWS Kubernetes Cluster Service), you need to first customize all required components like autoscaler, loadbalancer, persistent storage etc, all these components are writter in YAML file, you need write Terraform code to deploy these in form of pod with required parameters as per your needs. These pod will provide different services like DNS, Load Balancer, Storage Monitoring etc, these would be deploy in the form of pods in EKS Cluster which will be used by application pods running in EKS cluster.
+
+Once code are tested and ready, upload these to Github once it is approved, commit it. Now you need to write jenkins file which will control and run your code as and when you needed. Jekins file will push your codes to your local or private repository using any script like bash, python or ansible.
+
+To deploy code from repository
+Jekins > Terraform
+
+To execute or deploy your code use Jenkins 

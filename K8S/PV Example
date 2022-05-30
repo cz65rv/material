@@ -1,0 +1,163 @@
+---------------------------------------------
+Sample for Simple Volume directly used in Pod
+---------------------------------------------
+apiVersion: v1
+kind: Pod
+
+metadata:
+  name:  nginx
+
+spec:
+  containers:
+   - image: nginx
+     name: nginx
+
+
+
+     volumeMounts:                          
+       - mountPath: /usr/share/nginx/html            >>>>>>>>>>>>>>>>>>>>>>>> This section is used to define where volume would be attached in container.
+         name: data-volume
+
+
+
+
+  volumes:
+    - name: data-volume
+      hostPath:
+        path: /data
+        type: Directory
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+----------------------------
+Sample for Persistent Volume
+----------------------------
+apiVersion: v1
+kind: PersistentVolume
+
+metadata:
+  name: pv-volume
+  labels:
+    type: local
+
+spec:
+  storageClassName: manual                 >>>>>>>>>>>>>>>>>>>>>>>> Use this section to classify storage type, it is optional.
+
+  capacity:
+    storage: 5Gi
+
+  accessModes:
+    - ReadWriteOnce
+
+  gcePersistentDisk:                       >>>>>>>>>>>>>>>>>>>>>>>> Use this section if you want to utilize cloud base storage, use either host-base or cloud-base storage.
+    pdName: pddisk
+    fsType: ext4
+
+  hostPath:    				   >>>>>>>>>>>>>>>>>>>>>>>> Use this section if you want present hosting node's directory as network attached storage.
+    path: "/mnt/data"
+
+
+
+
+
+
+----------------------------------
+Sample for Persistent Volume Claim
+----------------------------------
+apiVersion: v1
+kind: PersistentVolumeClaim
+
+metadata:
+  name: pv-claim
+
+spec:
+  storageClassName: manual                 >>>>>>>>>>>>>>>>>>>>>>>> Use this section to match PV which has manual class of storage, it is optional.
+
+  accessModes:
+    - ReadWriteOnce
+
+  resources:
+    requests:
+      storage: 2Gi
+
+
+--------------------------------------------------
+Sample for usage of Persistent Volume Claim in Pod
+--------------------------------------------------
+apiVersion: v1
+kind: Pod
+
+metadata:
+  name: pv-container
+
+spec:
+
+  containers:
+    - name: pv-container
+      image: nginx
+
+      volumeMounts:                          >>>>>>>>>>>>>>>>>>>>>>>> This section is used to define where volume would be attached in container.
+        - mountPath: "/usr/share/nginx/html"
+          name: pv-storage
+
+  volumes:
+    - name: pv-storage
+
+      persistentVolumeClaim:
+        claimName: pv-claim
+
+
+
+
+
+----------------------------------------------------------
+
+
+
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: pv-vol1
+spec:
+  accessModes:
+    - ReadWriteMany
+
+  capacity: 
+    storage: 500Mi
+
+
+-----------------------
+
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: myclaim
+spec:
+  accessModes:
+    - ReadWriteOnce
+
+  resources:
+    requests:
+      storage: 500Mi
+

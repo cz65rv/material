@@ -1,0 +1,68 @@
+provider "aws" {
+    region = "eu-west-1" # Ireland region, change as you wish
+    access_key = "1234567890"
+    secret_key = "1234567890"
+}
+
+resource "aws_instance" "my_first_instance" {
+    ami           = "${data.aws_ami.latest-ubuntu.id}"
+    instance_type = "t2.micro"
+}
+
+data "aws_ami" "latest-ubuntu" {
+most_recent = true
+owners = ["099720109477"] # Canonical
+
+  filter {
+      name   = "name"
+      values = ["ubuntu/images/hvm-ssd/ubuntu-xenial-16.04-amd64-server-*"]
+  }
+
+  filter {
+      name   = "virtualization-type"
+      values = ["hvm"]
+  }
+}
+
+------------------------------
+Latest ECS AMI with Terraform
+------------------------------
+
+data "aws_ami" "latest_ecs" {
+most_recent = true
+owners = ["591542846629"] # AWS
+
+  filter {
+      name   = "name"
+      values = ["*amazon-ecs-optimized"]
+  }
+
+  filter {
+      name   = "virtualization-type"
+      values = ["hvm"]
+  }  
+}
+
+------------------------------------
+Latest CentOS 7 AMI with Terraform
+------------------------------------
+
+data "aws_ami" "centos" {
+owners      = ["679593333241"]
+most_recent = true
+
+  filter {
+      name   = "name"
+      values = ["CentOS Linux 7 x86_64 HVM EBS *"]
+  }
+
+  filter {
+      name   = "architecture"
+      values = ["x86_64"]
+  }
+
+  filter {
+      name   = "root-device-type"
+      values = ["ebs"]
+  }
+}

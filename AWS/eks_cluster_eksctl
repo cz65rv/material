@@ -1,0 +1,15 @@
+To create EKS cluster using eksctl
+
+$ eksctl create cluster \
+> --name demo-cluster \
+> --version 1.21 \
+> --region us-east-1 \
+> --nodegroup-name demo-eks-nodes \
+> --node-type t2.micro \
+> --nodes 2
+
+To delete EKS cluster using eksctl
+$ eksctl delete cluster \
+> --region=us-east-1 \
+> --name=demo-cluster
+

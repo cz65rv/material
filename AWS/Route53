@@ -1,0 +1,9 @@
+Route53 Routing Policy
+---------------------
+1. Simple Routing
+2. Failover Routing
+3. Geolocation Routing
+4. Geoproximity Routing
+5. Latency Routing
+6. Multivalue Routing
+7. Weighted Routing

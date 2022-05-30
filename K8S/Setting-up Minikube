@@ -1,0 +1,61 @@
+To install minikube 
+-----------------------
+
+Note: Minikube wont work with root, need to creat local user which should have full sudo permission
+
+Create a normal user
+#useradd <user-name>
+#passwd <user-name>
+
+Install Docker first
+# sudo yum install docker
+
+Normally docker daemon would start once installation completed in case it is not then start it using below command. After running above command you wont get prompt back or run it in background
+#sudo dockerd
+
+Follow below steps to grant your user required docker permission which would be require for minikube
+--------------------------------
+Create the docker group.
+#sudo groupadd docker
+
+Add your user to the docker group.
+# sudo usermod -aG docker ${USER}
+
+You would need to log out and log back in so that your group membership is re-evaluated or type the following command:
+# id
+
+Verify that you can run docker commands without sudo.
+# docker run hello-world
+
+Install minikube & kubectl as follows:
+---------------------------------------
+
+# curl -LO https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64
+# sudo install minikube-linux-amd64 /usr/local/bin/minikube >>> This will copy kubernets file to /usr/local/bin
+# minikube start
+
+[mukesh@mylab ~]$ minikube start
+😄  minikube v1.18.1 on Redhat 8.3 (amd64)
+✨  Automatically selected the docker driver. Other choices: none, ssh
+👍  Starting control plane node minikube in cluster minikube
+🚜  Pulling base image ...
+💾  Downloading Kubernetes v1.20.2 preload ...
+    > preloaded-images-k8s-v9-v1....: 491.22 MiB / 491.22 MiB  100.00% 3.36 MiB
+🔥  Creating docker container (CPUs=2, Memory=2200MB) ...
+🐳  Preparing Kubernetes v1.20.2 on Docker 20.10.3 ...
+    ▪ Generating certificates and keys ...
+    ▪ Booting up control plane ...
+    ▪ Configuring RBAC rules ...
+🔎  Verifying Kubernetes components...
+    ▪ Using image gcr.io/k8s-minikube/storage-provisioner:v4
+🌟  Enabled addons: default-storageclass, storage-provisioner
+💡  kubectl not found. If you need it, try: 'minikube kubectl -- get pods -A'
+🏄  Done! kubectl is now configured to use "minikube" cluster and "default" namespace by default
+
+
+If you reboot server then you need to start docker and minikube services before using kubernetes
+
+# systemctl start docker
+# minikube start
+
+

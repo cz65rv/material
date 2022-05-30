@@ -1,0 +1,19 @@
+Default VPC and Subnet creation to used by EC2 Instance if no VPC or Subnet given.
+-----------------------------
+
+resource "aws_default_vpc" "default" {
+  tags = {
+    Name = "Default VPC"
+  }
+}
+
+resource "aws_default_subnet" "default_subnet" {
+  availability_zone = "ap-south-1a"
+
+  tags = {
+    Name = "default subnet"
+  }
+}
+
+
+

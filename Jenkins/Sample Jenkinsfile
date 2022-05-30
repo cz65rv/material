@@ -1,0 +1,60 @@
+node {
+    stage("Git Clone"){
+
+        git branch: 'main', credentialsId: 'GIT_HUB_CRED', url: 'https://github.com/cz65rv/lab.git'
+        }
+    
+    stage("Docker build"){
+        
+        sh 'docker version'
+        sh 'docker build -t hello-world .'
+        sh 'docker image list'
+        sh 'docker tag hello-world cz65rv/lab:hello-world-v2'
+    }
+    
+    stage("Docker Push"){
+        
+        withCredentials([string(credentialsId: 'DOCKER_HUB_CRED', variable: 'PASSWORD')]) {
+            sh 'docker login -u cz65rv -p $PASSWORD'
+        
+            sh 'docker push  cz65rv/lab:hello-world-v2'
+        }
+        
+    } 
+    
+    stage("SSH K8s Server") {
+        
+        def remote = [:]
+        remote.name = 'master'
+        remote.host = '10.0.2.15'
+        remote.user = 'mukesh'
+        remote.password = 'mukesh'
+        remote.allowAnyHosts = true
+    
+        stage('Put Manifest to K8s') {
+
+            sshPut remote: remote, from: 'hello-world.yaml', into: '.'
+        } 
+        
+        stage('Deploy pod') {
+          sshCommand remote: remote, command: "kubectl apply -f hello-world.yaml"
+        }
+    }
+}
+
+--------Example when using private key to login server for command execution-------------
+
+    stage("Deployment") {
+        sshagent(['SSH_PVT_KEY']) {
+        sh "scp -o StrictHostKeyChecking=no hello-world.yaml ubuntu@10.1.1.21:/home/ubuntu/"
+        script{
+            try {
+                sh "ssh ubuntu@10.1.1.21 kubectl apply -f hello-world.yaml"
+                }
+            catch(error){
+                sh "ssh ubuntu@10.1.1.21 kubectl create -f hello-world.yaml"
+                }
+            }
+        }
+        sshCommand remote: remote, command: "kubectl apply -f hello-world.yaml"
+    }

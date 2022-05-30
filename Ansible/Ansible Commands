@@ -1,0 +1,18 @@
+There are two ways to use Ansible
+
+1) Direct running commands on target hosts using shell module 
+Ex. # ansible -m ping 'inventory-file'
+
+2) Performing operation through playbook 
+Ex. # ansible-playbook <playbook-name>
+
+Default location for inventory file is /etc/ansible/hosts, so if you dont specify specific location for inventory file using --inventory <inventory-path> or -i <inventory-path>.
+
+TIP: Google ansible module to do certain task like "ansible module to install package" or "ansible module to copy file" you will find related module details with option and sample playbook.
+
+To verify playbook syntax use below command:
+# ansible-playbook <playbook-name> --syntax-check
+
+To check if playbook would be run correctly use --check in the end of command:
+# ansible-playbook <playbook-name> --check
+
